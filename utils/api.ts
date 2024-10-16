@@ -139,7 +139,7 @@ export const submitUser = async (userData: Omit<ApiUser, 'id'>): Promise<ApiUser
 
 // Function to fetch questions
 export const fetchQuestions = async (): Promise<Question[]> => {
-    const response = await api.get('/questions');
+    const response = await axios.get('http://localhost:4000/api/breastfeeding-questions');
     return response.data;
 };
 
