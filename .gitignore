@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
+/yarn/install-state.gz
 
 # testing
 /coverage
@@ -31,6 +31,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.local   # This line ensures that .env.local is ignored
 
 # vercel
 .vercel

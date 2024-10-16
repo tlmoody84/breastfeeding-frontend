@@ -1,11 +1,6 @@
-// pages/notes.tsx
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-
-interface Note {
-    id: number;
-    content: string;
-}
+import { fetchNotes } from '../utils/api';
+import { Note } from '../utils/types';
 
 const NotesPage: React.FC = () => {
     const [notes, setNotes] = useState<Note[]>([]);
@@ -13,38 +8,47 @@ const NotesPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchNotes = async () => {
+        const loadNotes = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/notes`);
-                setNotes(response.data);
+                const data: Note[] = await fetchNotes();
+                console.log('Fetched notes:', data); // Log the data received
+                if (Array.isArray(data)) {
+                    setNotes(data);
+                } else {
+                    console.error('Expected an array but got:', data);
+                    setNotes([]); // Reset to empty array if not valid
+                }
             } catch (err) {
-                setError('Failed to fetch notes');
+                console.error('Error loading notes:', err);
+                setError('Failed to load notes'); // Update error state
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchNotes();
+        loadNotes();
     }, []);
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div>
             <h1>Notes</h1>
-            <ul>
-                {notes.map((note) => (
-                    <li key={note.id}>{note.content}</li>
-                ))}
-            </ul>
+            {notes.length === 0 ? (
+                <p>No notes available.</p>
+            ) : (
+                <ul>
+                    {notes.map(note => (
+                        <li key={note.id}>
+                            <p>{note.content}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
 
 export default NotesPage;
+

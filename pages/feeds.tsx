@@ -1,11 +1,6 @@
-// pages/feeds.tsx
 import { useEffect, useState } from 'react';
 import { fetchFeeds } from '../utils/api';
-
-interface Feed {
-    id: number;
-    content: string;
-}
+import { Feed } from '../utils/types';
 
 const FeedsPage: React.FC = () => {
     const [feeds, setFeeds] = useState<Feed[]>([]);
@@ -15,10 +10,17 @@ const FeedsPage: React.FC = () => {
     useEffect(() => {
         const loadFeeds = async () => {
             try {
-                const data = await fetchFeeds();
-                setFeeds(data);
+                const data: Feed[] = await fetchFeeds();
+                console.log('Fetched feeds:', data); // Log the data received
+                if (Array.isArray(data)) {
+                    setFeeds(data);
+                } else {
+                    console.error('Expected an array but got:', data);
+                    setFeeds([]); // Reset to empty array if not valid
+                }
             } catch (err) {
-                setError('Failed to load feeds');
+                console.error('Error loading feeds:', err);
+                setError('Failed to load feeds'); // Update error state
             } finally {
                 setLoading(false);
             }
@@ -33,11 +35,18 @@ const FeedsPage: React.FC = () => {
     return (
         <div>
             <h1>Feeds</h1>
-            <ul>
-                {feeds.map((feed) => (
-                    <li key={feed.id}>{feed.content}</li>
-                ))}
-            </ul>
+            {feeds.length === 0 ? (
+                <p>No feeds available.</p>
+            ) : (
+                <ul>
+                    {feeds.map(feed => (
+                        <li key={feed.id}>
+                            <h2>{feed.title}</h2>
+                            <p>{feed.content}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
