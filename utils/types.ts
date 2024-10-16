@@ -1,23 +1,6 @@
-// export interface NextAuthUser {
-//     id: string; // Change this to string to match NextAuth
-//     email: string;
-// }
-
-
-// export interface ApiUser {
-//     id: number;
-//     email: string;
-//     created_at: string;
-//     name?: string; // Keep this optional if it's not always present
-// }
-
-
-
-
-
-
-
 // types.ts
+import { ReactNode } from 'react';
+
 
 export interface ApiUser {
     id: number;
@@ -26,13 +9,31 @@ export interface ApiUser {
     name?: string; // Optional if not always present
 }
 
-export interface Feed {
+export interface Note {
     id: number;
-    title: string;
     content: string;
 }
 
-export interface Note {
+export interface Feed {
+    id?: number; // Make id optional
+    user_id: number;
+    duration: number; // in minutes
+    feed_time: string; // ISO date string
+    notes?: string | null; // Optional field for notes
+    title?: string; // Optional field for title
+    content?: string; // Optional field for content
+}
+
+export interface Question {
     id: number;
+    user_id: number;
+    content: string;
+    replies: Reply[]; // Add a replies field
+}
+
+export interface Reply {
+    id: number;
+    question_id: number;
+    user_id: number;
     content: string;
 }
