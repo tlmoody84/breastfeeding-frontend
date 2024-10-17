@@ -11,16 +11,13 @@ const NotesPage: React.FC = () => {
         const loadNotes = async () => {
             try {
                 const data: Note[] = await fetchNotes();
-                console.log('Fetched notes:', data); // Log the data received
                 if (Array.isArray(data)) {
                     setNotes(data);
                 } else {
-                    console.error('Expected an array but got:', data);
-                    setNotes([]); // Reset to empty array if not valid
+                    setNotes([]);
                 }
             } catch (err) {
-                console.error('Error loading notes:', err);
-                setError('Failed to load notes'); // Update error state
+                setError('Failed to load notes');
             } finally {
                 setLoading(false);
             }
@@ -29,18 +26,18 @@ const NotesPage: React.FC = () => {
         loadNotes();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error">{error}</div>;
 
     return (
-        <div>
+        <div className="notes-container">
             <h1>Notes</h1>
             {notes.length === 0 ? (
                 <p>No notes available.</p>
             ) : (
-                <ul>
+                <ul className="notesList">
                     {notes.map(note => (
-                        <li key={note.id}>
+                        <li key={note.id} className="noteItem">
                             <p>{note.content}</p>
                         </li>
                     ))}
@@ -51,4 +48,3 @@ const NotesPage: React.FC = () => {
 };
 
 export default NotesPage;
-

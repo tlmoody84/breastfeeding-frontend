@@ -1,0 +1,126 @@
+/* global.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* Set a default font */
+    color: #333; /* Default text color */
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Common loading and error styles */
+.loading {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Notes Page Styles */
+.notes-container {
+    background-color: #ffccff; /* Bright pink background */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.notesList {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0;
+}
+
+.noteItem {
+    background-color: #ffff99; /* Bright yellow background for notes */
+    color: #7a1e9d; /* Purple text color */
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.noteItem:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Users Page Styles */
+.users-container {
+    background-color: #cceeff; /* Bright light blue background */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.user-item {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+    background-color: #ffffff; /* White background for user items */
+    border-radius: 5px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.user-item:hover {
+    background-color: #99e6b3; /* Bright green on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Feeds Page Styles */
+.feeds-container {
+    background-color: #ffebcc; /* Bright light orange background */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.feed-item {
+    background-color: #ffffff; /* White background for feeds */
+    color: #333; /* Default text color */
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feed-item:hover {
+    transform: scale(1.01); /* Slight zoom effect on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Bar Styles */
+nav {
+    background-color: #333; /* Change to your desired color */
+    width: 100%;
+    padding: 1rem 0; /* Vertical padding */
+    position: fixed; /* Fixed position to stick to the top */
+    top: 0; /* Aligns to the top */
+    z-index: 1000; /* Ensures it stays above other elements */
+}
+
+nav ul {
+    list-style: none; /* Remove default list styles */
+    display: flex; /* Use flexbox to lay out the items */
+    justify-content: space-around; /* Space items evenly */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+nav li {
+    color: white; /* Change text color */
+}
+
+nav a {
+    color: white; /* Change link color */
+    text-decoration: none; /* Remove underline */
+    padding: 0.5rem 1rem; /* Padding around links */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Change on hover */
+}

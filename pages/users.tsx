@@ -11,16 +11,16 @@ const UsersPage: React.FC = () => {
         const loadUsers = async () => {
             try {
                 const data: ApiUser[] = await fetchUsers();
-                console.log('Fetched users:', data); // Log the data received
+                console.log('Fetched users:', data);
                 if (Array.isArray(data)) {
                     setUsers(data);
                 } else {
                     console.error('Expected an array but got:', data);
-                    setUsers([]); // Reset to empty array if not valid
+                    setUsers([]);
                 }
             } catch (err) {
                 console.error('Error loading users:', err);
-                setError('Failed to load users'); // Update error state
+                setError('Failed to load users');
             } finally {
                 setLoading(false);
             }
@@ -29,18 +29,18 @@ const UsersPage: React.FC = () => {
         loadUsers();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (loading) return <div className="loading-spinner">Loading...</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
     return (
-        <div>
+        <div className="container">
             <h1>Users</h1>
             {users.length === 0 ? (
                 <p>No users available.</p>
             ) : (
                 <ul>
                     {users.map(user => (
-                        <li key={user.id}>{user.email}</li>
+                        <li key={user.id} className="user-item">{user.email}</li>
                     ))}
                 </ul>
             )}
@@ -49,3 +49,4 @@ const UsersPage: React.FC = () => {
 };
 
 export default UsersPage;
+
