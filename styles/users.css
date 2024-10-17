@@ -1,0 +1,23 @@
+/* Users Page Styles */
+.users-container {
+    background-color: #040504; /* Black background */
+    border-radius: 8px;
+    padding: 20px; /* Add some padding for better spacing */
+    margin-top: 70px; /* Space for fixed navbar */
+    color: #ffffff; /* White text for better contrast */
+}
+
+.user-item {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #1369eb; /* White border for user items */
+    margin: 5px 0;
+    background-color: #deee99; /* Dark grey background for user items */
+    border-radius: 5px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.user-item:hover {
+    background-color: #2935e4; /* Bright green on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}

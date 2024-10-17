@@ -1,0 +1,26 @@
+/* Notes Page Styles */
+.notes-container {
+    background-color: #ec13ec; /* Bright pink background */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 70px; /* Space for fixed navbar */
+}
+
+.notesList {
+    list-style-type: circle; /* Circle list style */
+    padding: 0;
+}
+
+.noteItem {
+    background-color: #ffff99; /* Bright yellow background for notes */
+    color: #7a1e9d; /* Purple text color */
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.noteItem:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

@@ -1,9 +1,8 @@
-/* global.css */
-
+/* Global Styles */
 body {
     margin: 0;
-    font-family: Arial, sans-serif; /* Set a default font */
-    color: #333; /* Default text color */
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bolder;
 }
 
 h1 {
@@ -23,73 +22,21 @@ h1 {
     margin-top: 20px;
 }
 
-/* Notes Page Styles */
-.notes-container {
-    background-color: #ffccff; /* Bright pink background */
-    padding: 20px;
-    border-radius: 8px;
+/* Sidebar Styles */
+.sidebar {
+    width: 60px; /* Initial width */
+    height: 100vh; /* Full height */
+    background-color: #333; /* Background color */
+    position: fixed; /* Fixed position */
+    top: 0; /* Aligns to the top */
+    right: 0; /* Aligns to the right */
+    padding-top: 20px; /* Padding at the top */
+    overflow: hidden; /* Hide overflow when collapsed */
+    transition: width 0.3s; /* Smooth transition for width change */
 }
 
-.notesList {
-    list-style-type: none; /* Remove default list styles */
-    padding: 0;
-}
-
-.noteItem {
-    background-color: #ffff99; /* Bright yellow background for notes */
-    color: #7a1e9d; /* Purple text color */
-    padding: 15px;
-    border-radius: 5px;
-    margin: 10px 0;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.noteItem:hover {
-    transform: scale(1.02); /* Slight zoom effect on hover */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Users Page Styles */
-.users-container {
-    background-color: #cceeff; /* Bright light blue background */
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.user-item {
-    cursor: pointer;
-    padding: 10px;
-    border: 1px solid #ccc;
-    margin: 5px 0;
-    background-color: #ffffff; /* White background for user items */
-    border-radius: 5px;
-    transition: background-color 0.2s, transform 0.2s;
-}
-
-.user-item:hover {
-    background-color: #99e6b3; /* Bright green on hover */
-    transform: translateY(-2px); /* Lift effect on hover */
-}
-
-/* Feeds Page Styles */
-.feeds-container {
-    background-color: #ffebcc; /* Bright light orange background */
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.feed-item {
-    background-color: #ffffff; /* White background for feeds */
-    color: #333; /* Default text color */
-    padding: 15px;
-    border-radius: 5px;
-    margin: 10px 0;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.feed-item:hover {
-    transform: scale(1.01); /* Slight zoom effect on hover */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.sidebar:hover {
+    width: 75px; /* Expanded width on hover */
 }
 
 /* Navigation Bar Styles */
@@ -123,4 +70,56 @@ nav a {
 
 nav a:hover {
     background-color: rgba(255, 255, 255, 0.2); /* Change on hover */
+}
+
+/* Main Content Area */
+.main-content {
+    margin-right: 75px; /* Space for sidebar */
+    margin-top: 70px; /* Space for navbar */
+    padding: 20px; /* Padding for content */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Sidebar Navigation List Styles */
+.navList {
+    list-style: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+    display: flex; /* Use flexbox for vertical alignment */
+    flex-direction: column; /* Stack items vertically */
+}
+
+.navItem {
+    margin: 10px 0; /* Spacing between items */
+}
+
+.navItem a {
+    color: white; /* Link color */
+    text-decoration: none; /* Remove underline */
+    padding: 10px; /* Padding around links */
+    display: block; /* Makes the entire area clickable */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.navItem a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Change background on hover */
+}
+
+/* Additional styles for showing text in expanded view */
+.sidebar:hover .navItem a {
+    padding-left: 20px; /* Add padding to shift text */
+}
+
+/* Add this to ensure links are hidden when collapsed */
+.navItem a {
+    overflow: hidden; /* Hide overflow */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.sidebar:hover .navItem a {
+    visibility: visible; /* Make visible on hover */
+}
+
+/* Set the default visibility to hidden */
+.navItem a {
+    visibility: hidden; /* Initially hide */
 }
