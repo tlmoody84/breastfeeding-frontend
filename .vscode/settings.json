@@ -5,7 +5,9 @@
         "Millis",
         "pkey",
         "supabase",
+        "TABLESPACE",
         "tailwindcss",
-        "tanstack"
+        "tanstack",
+        "userid"
     ]
 }
