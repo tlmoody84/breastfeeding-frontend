@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
+        "fkey",
+        "imageid",
         "Millis",
+        "pkey",
         "supabase",
         "tailwindcss",
         "tanstack"
