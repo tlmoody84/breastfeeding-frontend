@@ -6,8 +6,16 @@ body {
 }
 
 h1 {
+    padding: 45px;
+    text-align: center;
+    font-size: 70px;
+}
+
+h2 {
+    padding: 45px;
     text-align: center;
 }
+
 
 /* Common loading and error styles */
 .loading {

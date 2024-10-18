@@ -1,21 +1,26 @@
 require('dotenv').config();
-
-const express = require('express');
-const next = require('next');
-const cors = require('cors');
-const path = require('path');
-const request = require('request'); // Make sure to require 'request'
-const bodyParser = require('body-parser'); // To parse JSON bodies
+import express from 'express';
+import next from 'next';
+import cors from 'cors';
+import path from 'path';
+import request from 'request';
+import bodyParser from 'body-parser';
+import likesRoutes from './api/routes/likesRoutes'; // Adjust the path as necessary
+import feedsRoutes from './api/routes/feedsRoutes'; // Add this import for feeds
+import usersRoutes from './api/routes/usersRoutes'; // Add this import for users
+import { supabase } from './supabaseClient'; // Import your Supabase client
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
+const nextApp = next({ dev });
+const handle = nextApp.getRequestHandler();
 
 const server = express();
 
 // Enable CORS for your API routes
 server.use(cors({
   origin: ['http://localhost:4001'], // Adjust origins as needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+  credentials: true, // Allow credentials if needed
 }));
 
 // Middleware to parse JSON bodies
@@ -24,26 +29,75 @@ server.use(bodyParser.json());
 // Serve static files from the "public" directory
 server.use(express.static(path.join(__dirname, 'public')));
 
-// Example API route
-server.get('/api/feeds', (req, res) => {
-  res.json([{ id: 1, content: 'Feed content 1' }, { id: 2, content: 'Feed content 2' }]);
+// Use routes
+server.use('/api/likes', likesRoutes); // Mount likes routes
+server.use('/api/feeds', feedsRoutes); // Mount feeds routes
+server.use('/api/users', usersRoutes); // Mount users routes
+
+// Example CRUD API route for feeds
+server.get('/api/feeds', async (req, res) => {
+  try {
+      const { data, error } = await supabase.from('feeds').select('*');
+      if (error) throw new Error('Error fetching feeds');
+      res.json(data);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
 });
 
-// Route to fetch questions
-server.get('/api/questions', async (req, res) => {
-  // Logic to fetch questions from the database
+
+server.post('/api/feeds', async (req, res) => {
+  const { user_id, duration, notes } = req.body;
+  const { data, error } = await supabase.from('feeds').insert([{ user_id, duration, notes }]);
+  if (error) return res.status(500).json({ error: 'Error adding feed' });
+  res.status(201).json(data);
 });
 
-// Route to submit a new question
-server.post('/api/questions', async (req, res) => {
-  // Logic to add a new question to the database
+server.put('/api/feeds/:id', async (req, res) => {
+  const { id } = req.params;
+  const { user_id, duration, notes } = req.body;
+  const { data, error } = await supabase.from('feeds').update({ user_id, duration, notes }).eq('id', id);
+  if (error) return res.status(500).json({ error: 'Error updating feed' });
+  res.json(data);
 });
+
+server.delete('/api/feeds/:id', async (req, res) => {
+  const { id } = req.params;
+  const { error } = await supabase.from('feeds').delete().eq('id', id);
+  if (error) return res.status(500).json({ error: 'Error deleting feed' });
+  res.status(204).send(); // No content
+});
+
+// Example CRUD API route for users
+server.get('/api/users', async (req, res) => {
+  const { data, error } = await supabase.from('users').select('*');
+  if (error) return res.status(500).json({ error: 'Error fetching users' });
+  res.json(data);
+});
+
+server.post('/api/users', async (req, res) => {
+  const { name, email } = req.body;
+  const { data, error } = await supabase.from('users').insert([{ name, email }]);
+  if (error) return res.status(500).json({ error: 'Error adding user' });
+  res.status(201).json(data);
+});
+
+// Similar PUT and DELETE methods for users can be added here
+
+// Example CRUD API route for likes
+server.get('/api/likes', async (req, res) => {
+  const { data, error } = await supabase.from('image_votes').select('*');
+  if (error) return res.status(500).json({ error: 'Error fetching likes' });
+  res.json(data);
+});
+
+// Use likesRoutes for more specific likes-related operations (already defined in likesRoutes.js)
 
 // Proxy route
 server.get('/proxy', (req, res) => {
   const url = req.query.url; // The URL you want to fetch
-  request({ url, method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } })
-      .pipe(res);
+  request({ url, method: 'GET' })
+    .pipe(res);
 });
 
 // Handle all other requests with Next.js

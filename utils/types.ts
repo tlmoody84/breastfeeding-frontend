@@ -24,16 +24,10 @@ export interface Feed {
     content?: string; // Optional field for content
 }
 
-export interface Question {
-    id: number;
-    user_id: number;
-    content: string;
-    replies: Reply[]; // Add a replies field
-}
-
-export interface Reply {
-    id: number;
-    question_id: number;
-    user_id: number;
-    content: string;
+// Like interface
+export interface Like {
+    id?: number; // Make id optional, depending on your use case
+    user_id: number; // ID of the user who liked the image
+    image_id: string; // Identifier for the liked image
+    created_at: string; // Timestamp of when the like was created (ISO date string)
 }

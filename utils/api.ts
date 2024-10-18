@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ApiUser, Feed, Note, Question, Reply } from './types'; // Adjust import paths as needed
+import { ApiUser, Feed, Note } from './types'; // Adjust import paths as needed
 
 // Create an Axios instance with a base URL
 const api = axios.create({
@@ -57,30 +57,26 @@ export const submitUser = async (userData: Omit<ApiUser, 'id'>): Promise<ApiUser
     }
 };
 
-// Function to fetch questions
-export const fetchQuestions = async (): Promise<Question[]> => {
-    const response = await axios.get('http://localhost:4000/api/breastfeeding-questions');
-    return response.data;
-};
-
-// Function to submit a new question
-export const submitQuestion = async (questionData: { content: string; user_id: number }): Promise<Question> => {
+const fetchLikes = async (imageId) => {
     try {
-        const response = await api.post('/questions', questionData);
-        return response.data; // Return the created question
-    } catch (error) {
-        console.error('Error submitting question:', error);
-        throw error; // Re-throw the error for handling elsewhere
-    }
-};
+        const response = await fetch(`http://localhost:4000/api/likes/${imageId}`);
 
-// Function to submit a reply
-export const submitReply = async (questionId: number, replyData: { content: string; user_id: number }): Promise<Reply> => {
-    try {
-        const response = await api.post(`/questions/${questionId}/replies`, replyData);
-        return response.data; // Return the created reply
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`Error fetching likes: ${response.statusText}`);
+        }
+
+        const likesData = await response.json();
+
+        // Display the likes along with user_ids
+        likesData.forEach(like => {
+            console.log(`User ID: ${like.user_id} liked image ${like.image_id}`);
+        });
+
+        // Optionally return the likes data for further use
+        return likesData;
     } catch (error) {
-        console.error('Error submitting reply:', error);
-        throw error; // Re-throw the error for handling elsewhere
+        console.error('Failed to fetch likes:', error);
+        // Handle the error as needed (e.g., display a message to the user)
     }
 };
