@@ -1,12 +1,11 @@
 // next.config.js
 module.exports = {
-    reactStrictMode: true, // Enables React's Strict Mode
+    reactStrictMode: true, 
     env: {
-      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL, // Expose environment variable
+      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     },
     images: {
-      domains: ['your-image-domain.com'], // Add allowed image domains if using next/image
+      domains: ['your-image-domain.com'], 
     },
-    // Any other custom configurations can go here
   };
   

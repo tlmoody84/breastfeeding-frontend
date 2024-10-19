@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs", 
     "lib": [
       "dom",
       "dom.iterable",
@@ -7,20 +9,23 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": false, 
     "noEmit": true,
     "incremental": true,
-    "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "pages/**/*",
+    "setupTests.js",
+    "jest.config.js"
   ],
   "exclude": [
     "node_modules"

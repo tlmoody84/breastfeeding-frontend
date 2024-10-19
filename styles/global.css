@@ -17,7 +17,6 @@ h2 {
 }
 
 
-/* Common loading and error styles */
 .loading {
     text-align: center;
     font-size: 24px;
@@ -30,104 +29,103 @@ h2 {
     margin-top: 20px;
 }
 
-/* Sidebar Styles */
 .sidebar {
-    width: 60px; /* Initial width */
-    height: 100vh; /* Full height */
-    background-color: #333; /* Background color */
-    position: fixed; /* Fixed position */
-    top: 0; /* Aligns to the top */
-    right: 0; /* Aligns to the right */
-    padding-top: 20px; /* Padding at the top */
-    overflow: hidden; /* Hide overflow when collapsed */
-    transition: width 0.3s; /* Smooth transition for width change */
-}
+    width: 60px; 
+    height: 100vh;
+    background-color: #333; 
+    position: fixed; 
+    top: 0; 
+    right: 0; 
+    padding-top: 20px; 
+    overflow: hidden; 
+    transition: width 0.3s; 
 
 .sidebar:hover {
-    width: 75px; /* Expanded width on hover */
+    width: 75px; 
 }
 
 /* Navigation Bar Styles */
 nav {
-    background-color: #333; /* Change to your desired color */
+    background-color: #333;
     width: 100%;
-    padding: 1rem 0; /* Vertical padding */
-    position: fixed; /* Fixed position to stick to the top */
-    top: 0; /* Aligns to the top */
-    z-index: 1000; /* Ensures it stays above other elements */
+    padding: 1rem 0;
+    position: fixed; 
+    top: 0; 
+    z-index: 1000;
 }
 
 nav ul {
-    list-style: none; /* Remove default list styles */
-    display: flex; /* Use flexbox to lay out the items */
-    justify-content: space-around; /* Space items evenly */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
+    list-style: none;
+    display: flex; 
+    justify-content: space-around; 
+    margin: 0;
+    padding: 0; 
 }
 
 nav li {
-    color: white; /* Change text color */
+    color: white; 
 }
 
 nav a {
-    color: white; /* Change link color */
-    text-decoration: none; /* Remove underline */
-    padding: 0.5rem 1rem; /* Padding around links */
-    transition: background-color 0.3s; /* Smooth background transition */
+    color: white; 
+    text-decoration: none; 
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s; 
 }
 
 nav a:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Change on hover */
+    background-color: rgba(255, 255, 255, 0.2); 
 }
 
 /* Main Content Area */
 .main-content {
-    margin-right: 75px; /* Space for sidebar */
-    margin-top: 70px; /* Space for navbar */
-    padding: 20px; /* Padding for content */
-    overflow-y: auto; /* Enable vertical scrolling */
+    margin-right: 75px;
+    margin-top: 70px; 
+    padding: 20px; 
+    overflow-y: auto;
 }
 
 /* Sidebar Navigation List Styles */
 .navList {
-    list-style: none; /* Remove default list styles */
-    padding: 0; /* Remove default padding */
-    display: flex; /* Use flexbox for vertical alignment */
-    flex-direction: column; /* Stack items vertically */
+    list-style: none; 
+    padding: 0; 
+    display: flex; 
+    flex-direction: column; 
 }
 
 .navItem {
-    margin: 10px 0; /* Spacing between items */
+    margin: 10px 0;
 }
 
 .navItem a {
-    color: white; /* Link color */
-    text-decoration: none; /* Remove underline */
-    padding: 10px; /* Padding around links */
-    display: block; /* Makes the entire area clickable */
-    transition: background-color 0.3s; /* Smooth background transition */
+    color: white; 
+    text-decoration: none; 
+    padding: 10px; 
+    display: block;
+    transition: background-color 0.3s; 
 }
 
 .navItem a:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Change background on hover */
+    background-color: rgba(255, 255, 255, 0.2); 
 }
 
 /* Additional styles for showing text in expanded view */
 .sidebar:hover .navItem a {
-    padding-left: 20px; /* Add padding to shift text */
+    padding-left: 20px; 
 }
 
-/* Add this to ensure links are hidden when collapsed */
+/* Added this to make sure links are hidden when collapsed */
 .navItem a {
-    overflow: hidden; /* Hide overflow */
-    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden;
+    white-space: nowrap; 
 }
 
 .sidebar:hover .navItem a {
-    visibility: visible; /* Make visible on hover */
+    visibility: visible; 
 }
 
 /* Set the default visibility to hidden */
 .navItem a {
-    visibility: hidden; /* Initially hide */
+    visibility: hidden; 
+}
 }

@@ -5,7 +5,7 @@ interface Recipe {
     title: string;
     ingredients: string[];
     instructions: string;
-    author_id?: number; // Adjust as necessary
+    author_id?: number; 
 }
 
 const RecipePage: React.FC = () => {
@@ -73,8 +73,8 @@ const RecipePage: React.FC = () => {
             }
 
             const data = await response.json();
-            setRecipes((prevRecipes) => [...prevRecipes, data]); // Update the recipes list
-            setNewRecipe({ title: '', ingredients: [], instructions: '' }); // Reset form
+            setRecipes((prevRecipes) => [...prevRecipes, data]); 
+            setNewRecipe({ title: '', ingredients: [], instructions: '' }); 
         } catch (error: unknown) {
             console.error('Error creating recipe:', error);
             setError((error as Error).message);

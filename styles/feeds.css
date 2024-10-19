@@ -1,33 +1,31 @@
 /* Notes Feeds Styles */
 .feeds-container {
-    background-color: #3c09f5; /* Bright blue background */
+    background-color: #3c09f5; 
     padding: 20px;
     border-radius: 8px;
-    border: 2px solid #ffcc00; /* Bright yellow border */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    margin-top: 70px; /* Space for fixed navbar */
+    border: 2px solid #ffcc00;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+    margin-top: 70px; 
 }
 
 .feed-item {
-    background-color: #fd2ca6; /* Bright pink background for feeds */
-    color: #fff; /* White text color for contrast */
+    background-color: #fd2ca6; 
+    color: #fff; 
     padding: 15px;
     border-radius: 5px;
-    margin: 15px 0; /* Increased margin for more spacing */
+    margin: 15px 0; 
     transition: transform 0.2s, box-shadow 0.2s;
-    border: 2px solid #ff5722; /* Bright orange border for each feed item */
+    border: 2px solid #ff5722; 
 }
 
 .feed-item:hover {
-    transform: scale(1.02); /* Slight zoom effect on hover */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+    transform: scale(1.02); 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Additional Styles for Sectioning */
 .section-title {
-    color: #ffcc00; /* Bright yellow text for section titles */
-    font-size: 24px; /* Larger font for titles */
-    margin-bottom: 10px; /* Spacing below titles */
-    border-bottom: 2px solid #ff5722; /* Bright orange underline */
-    padding-bottom: 5px; /* Padding below title */
+    color: #ffcc00;
+    margin-bottom: 10px; 
+    border-bottom: 2px solid #ff5722;
+    padding-bottom: 5px; 
 }

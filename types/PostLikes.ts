@@ -2,10 +2,10 @@ export interface PostLikes {
     id: number;
     userId: string;
     postId: number;
-    timestamp: Date;   // or number for Unix timestamp
+    timestamp: Date;  
 }
 export interface User {
     id: string;
     name: string;
-    email?: string;     // Make email optional if not always required
+    email?: string;    
 }

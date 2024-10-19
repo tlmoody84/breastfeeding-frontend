@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchNotes } from '../utils/api';
 import { Note } from '../utils/types';
-// import styles from '../styles/notes.module.css';
 
 
 const NotesPage: React.FC = () => {

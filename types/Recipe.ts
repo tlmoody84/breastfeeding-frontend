@@ -1,5 +1,9 @@
-interface Recipe {
-    id: number;
+type Recipe = {
+    id: string;
     title: string;
-    ingredients: string[]; // Assuming ingredients is an array of strings
-}
+    ingredients: string[];
+    instructions: string;
+    author_id: string | null; 
+    created_at?: string; 
+    updated_at?: string; 
+};

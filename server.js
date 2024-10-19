@@ -124,11 +124,11 @@ import cors from 'cors';
 import path from 'path';
 import request from 'request';
 import bodyParser from 'body-parser';
-import likesRoutes from './api/routes/likesRoutes'; // Adjust the path as necessary
-import feedsRoutes from './api/routes/feedsRoutes'; // Add this import for feeds
-import usersRoutes from './api/routes/usersRoutes'; // Add this import for users
-import recipesRoutes from './api/routes/recipesRoutes'; // Import your recipes routes
-import { supabase } from './supabaseClient'; // Import your Supabase client
+import likesRoutes from './api/routes/likesRoutes'; 
+import feedsRoutes from './api/routes/feedsRoutes'; 
+import usersRoutes from './api/routes/usersRoutes';
+import recipesRoutes from './api/routes/recipesRoutes';
+import { supabase } from './supabaseClient';
 
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
@@ -136,26 +136,22 @@ const handle = nextApp.getRequestHandler();
 
 const server = express();
 
-// Enable CORS for your API routes
 server.use(cors({
-  origin: ['http://localhost:4001'], // Adjust origins as needed
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-  credentials: true, // Allow credentials if needed
+  origin: ['http://localhost:4001'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  credentials: true, 
 }));
 
-// Middleware to parse JSON bodies
 server.use(bodyParser.json());
 
-// Serve static files from the "public" directory
 server.use(express.static(path.join(__dirname, 'public')));
 
 // Use routes
-server.use('/api/likes', likesRoutes); // Mount likes routes
-server.use('/api/feeds', feedsRoutes); // Mount feeds routes
-server.use('/api/users', usersRoutes); // Mount users routes
-app.use('/api/recipes', recipesRoutes); // Mount recipes routes
+server.use('/api/likes', likesRoutes); 
+server.use('/api/feeds', feedsRoutes); 
+server.use('/api/users', usersRoutes); 
+app.use('/api/recipes', recipesRoutes); 
 
-// Example CRUD API route for feeds
 server.get('/api/feeds', async (req, res) => {
   try {
     const { data, error } = await supabase.from('feeds').select('*');
@@ -188,7 +184,6 @@ server.delete('/api/feeds/:id', async (req, res) => {
   res.status(204).send(); // No content
 });
 
-// Example CRUD API route for users
 server.get('/api/users', async (req, res) => {
   const { data, error } = await supabase.from('users').select('*');
   if (error) return res.status(500).json({ error: 'Error fetching users' });
@@ -202,22 +197,18 @@ server.post('/api/users', async (req, res) => {
   res.status(201).json(data);
 });
 
-// Example CRUD API route for likes
 server.get('/api/likes', async (req, res) => {
   const { data, error } = await supabase.from('image_votes').select('*');
   if (error) return res.status(500).json({ error: 'Error fetching likes' });
   res.json(data);
 });
 
-// Use likesRoutes for more specific likes-related operations (already defined in likesRoutes.js)
 
-// Proxy route
 server.get('/proxy', (req, res) => {
-  const url = req.query.url; // The URL you want to fetch
+  const url = req.query.url; 
   request({ url, method: 'GET' }).pipe(res);
 });
 
-// Recipe CRUD operations
 server.get('/api/recipes', async (req, res) => {
   try {
     const { data, error } = await supabase.from('recipes').select('*');
@@ -250,13 +241,11 @@ server.delete('/api/recipes/:id', async (req, res) => {
   res.status(204).send(); // No content
 });
 
-// Handle all other requests with Next.js
 server.all('*', (req, res) => {
   return handle(req, res);
 });
 
-// Start the server
-const PORT = process.env.PORT || 4001; // Set your desired port
+const PORT = process.env.PORT || 4001;
 server.listen(PORT, (err) => {
   if (err) throw err;
   console.log(`> Ready on http://localhost:${PORT}`);
