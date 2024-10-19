@@ -16,21 +16,24 @@ const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
 const server = express();
-
-// Update CORS configuration to allow requests from both localhost and your Vercel app
+server.use((req, res, next) => {
+  console.log('Request Origin:', req.headers.origin);
+  next();
+});
 server.use(cors({
   origin: [
-    'http://localhost:4001', // local development
-    'https://breastfeeding-frontend-59wp8f0ou-tlmoody84s-projects.vercel.app' // your Vercel app
+    'http://localhost:4001', 
+    'https://breastfeeding-frontend-59wp8f0ou-tlmoody84s-projects.vercel.app' 
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
 
+server.options('*', cors());
+
 server.use(bodyParser.json());
 server.use(express.static(path.join(__dirname, 'public')));
 
-// Use routes
 server.use('/api/likes', likesRoutes); 
 server.use('/api/feeds', feedsRoutes); 
 server.use('/api/users', usersRoutes); 
