@@ -49,7 +49,7 @@ const Home: React.FC = () => {
                 console.error('Failed to fetch recipes:', error.message);
             } else {
                 console.log('Fetched recipes:', data);
-                setRecipes(data); // Make sure 'data' includes 'id'
+                setRecipes(data); 
             }
         };
         fetchUser();
@@ -106,7 +106,7 @@ const Home: React.FC = () => {
     };
 
     const handleDeleteRecipe = async (recipe: Recipe) => {
-        const recipeId = recipe.id as string; // Assert that id is a string
+        const recipeId = recipe.id as string; 
         if (!recipeId) {
             console.error('No ID provided for deletion:', recipe);
             return;
@@ -162,7 +162,7 @@ const Home: React.FC = () => {
                         title,
                         ingredients: ingredientsArray,
                         instructions,
-                        author_id: userId // Use userId here
+                        author_id: userId 
                     }])
                     .select();
     
@@ -264,7 +264,7 @@ const Home: React.FC = () => {
             <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Recipes</h2>
             <ul>
     {recipes.map((recipe) => (
-        <li key={recipe.id}>  {/* Ensure recipe.id is defined */}
+        <li key={recipe.id}>  
             <h3>{recipe.title}</h3>
             <p>Ingredients: {recipe.ingredients.join(', ')}</p>
             <p>Instructions: {recipe.instructions}</p>
