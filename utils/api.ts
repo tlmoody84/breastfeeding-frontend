@@ -50,15 +50,10 @@ export const submitUser = async (userData: Omit<ApiUser, 'id'>): Promise<ApiUser
     }
 };
 
-const fetchLikes = async (imageId) => {
+export const fetchLikes = async (imageId: string): Promise<any[]> => { 
     try {
-        const response = await fetch(`http://localhost:4000/api/likes/${imageId}`);
-
-        if (!response.ok) {
-            throw new Error(`Error fetching likes: ${response.statusText}`);
-        }
-
-        const likesData = await response.json();
+        const response = await api.get(`/likes/${imageId}`); 
+        const likesData = response.data;
 
         likesData.forEach(like => {
             console.log(`User ID: ${like.user_id} liked image ${like.image_id}`);
@@ -67,5 +62,6 @@ const fetchLikes = async (imageId) => {
         return likesData;
     } catch (error) {
         console.error('Failed to fetch likes:', error);
+        throw error; 
     }
 };

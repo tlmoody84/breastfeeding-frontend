@@ -58,12 +58,17 @@ const Home: React.FC = () => {
 
     const handleLike = async (index) => {
         const newImageStates = [...imageStates];
-        newImageStates[index].loading = true;
-        setImageStates(newImageStates);
-    
+        
+        // Immediate update for better user experience
+        newImageStates[index].loading = true; // Show loading state
+        newImageStates[index].likes += 1; // Increment likes immediately
+        newImageStates[index].liked = true; // Mark as liked
+        newImageStates[index].error = ''; // Clear any previous error
+        setImageStates(newImageStates); // Update state
+
         const imageId = images[index].split('/').pop()?.split('.')[0]; 
-        const userId = null;
-    
+        const userId = null; // Adjust as necessary
+
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
                 method: 'POST',
@@ -72,30 +77,25 @@ const Home: React.FC = () => {
                 },
                 body: JSON.stringify({ user_id: userId }),
             });
-    
+
             if (!response.ok) {
                 throw new Error('Error liking image');
             }
-    
+
             const data = await response.json();
             console.log('Like successful:', data);
-    
-            newImageStates[index].likes += 1; 
-            newImageStates[index].liked = true; 
-            newImageStates[index].error = ''; 
-    
+
         } catch (error) {
             console.error('Error handling like:', error);
+            // Reset the likes count if the like operation fails
+            newImageStates[index].likes -= 1; 
             newImageStates[index].error = 'Failed to like image'; 
         } finally {
-            newImageStates[index].loading = false; 
-            setImageStates(newImageStates);
+            newImageStates[index].loading = false; // Stop loading state
+            setImageStates(newImageStates); // Update state again
         }
     };
-    
-    
-    
-    
+
     const handleEditRecipe = (recipe: Recipe) => {
         setTitle(recipe.title);
         setIngredients(recipe.ingredients.join(', '));
@@ -109,7 +109,7 @@ const Home: React.FC = () => {
             console.error('No ID provided for deletion:', recipe);
             return;
         }
-    
+
         console.log('Attempting to delete recipe with id:', recipe.id);
         
         try {
@@ -117,18 +117,24 @@ const Home: React.FC = () => {
                 .from('recipes')
                 .delete()
                 .eq('id', recipe.id); 
-    
+
             if (error) {
                 throw error;
             }
-    
+
             setRecipes((prevRecipes) => prevRecipes.filter(r => r.id !== recipe.id));
         } catch (error) {
             console.error('Error deleting recipe:', error.message);
             alert('Failed to delete the recipe. Please try again.');
         }
     };
-    
+
+    const resetRecipeForm = () => {
+        setTitle('');
+        setIngredients('');
+        setInstructions('');
+        setRecipeIdToUpdate(null);
+    };
 
     const handleRecipeSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -259,24 +265,18 @@ const Home: React.FC = () => {
 
             <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Recipes</h2>
             <ul>
-    {recipes.map((recipe) => (
-        <li key={recipe.id}>  
-            <h3>{recipe.title}</h3>
-            <p>Ingredients: {recipe.ingredients.join(', ')}</p>
-            <p>Instructions: {recipe.instructions}</p>
-            <button onClick={() => handleEditRecipe(recipe)}>Edit</button>
-            <button onClick={() => handleDeleteRecipe(recipe)}>Delete</button>
-        </li>
-    ))}
-</ul>
-
-    
+                {recipes.map((recipe) => (
+                    <li key={recipe.id}>  
+                        <h3>{recipe.title}</h3>
+                        <p>Ingredients: {recipe.ingredients.join(', ')}</p>
+                        <p>Instructions: {recipe.instructions}</p>
+                        <button onClick={() => handleEditRecipe(recipe)}>Edit</button>
+                        <button onClick={() => handleDeleteRecipe(recipe)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
 
 export default Home;
-
-function resetRecipeForm() {
-    throw new Error('Function not implemented.');
-}
