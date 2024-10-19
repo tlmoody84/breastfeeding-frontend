@@ -22,8 +22,8 @@ server.use((req, res, next) => {
 });
 server.use(cors({
   origin: [
-    'http://localhost:4001', 
-    'https://breastfeeding-frontend-lrjuhjx3x-tlmoody84s-projects.vercel.app' 
+    'http://localhost:4001', // local development
+    'https://breastfeeding-frontend.vercel.app' // your Vercel app
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
