@@ -60,10 +60,10 @@ const Home: React.FC = () => {
         const newImageStates = [...imageStates];
         newImageStates[index].loading = true;
         setImageStates(newImageStates);
-        
+    
         const imageId = images[index].split('/').pop()?.split('.')[0];
         const anonId = userId ? null : `anon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        
+    
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
                 method: 'POST',
@@ -73,31 +73,30 @@ const Home: React.FC = () => {
                 },
                 body: JSON.stringify({ user_id: userId }),
             });
-
+    
             if (!response.ok) {
                 throw new Error('Error liking image');
             }
-
+    
             const data = await response.json();
             console.log('Like successful:', data);
-            newImageStates[index].likes += 1; 
-            newImageStates[index].liked = true;
-            newImageStates[index].error = '';
-
-            setTimeout(() => {
-                newImageStates[index].liked = false; 
-                setImageStates(newImageStates);
-            }, 2000); 
-
+    
+            // Increment the likes count in state
+            newImageStates[index].likes += 1; // Increment likes
+            newImageStates[index].liked = true; // Mark as liked
+            newImageStates[index].error = ''; // Clear any previous errors
+    
         } catch (error) {
             console.error('Error handling like:', error);
-            newImageStates[index].error = 'Failed to like image';
+            newImageStates[index].error = 'Failed to like image'; // Set error message
         } finally {
-            newImageStates[index].loading = false;
-            setImageStates(newImageStates);
+            newImageStates[index].loading = false; // Stop loading
+            setImageStates(newImageStates); // Update state
         }
     };
-
+    
+    
+    
     const handleEditRecipe = (recipe: Recipe) => {
         setTitle(recipe.title);
         setIngredients(recipe.ingredients.join(', '));
@@ -138,7 +137,6 @@ const Home: React.FC = () => {
     
         try {
             if (recipeIdToUpdate) {
-                // Update recipe
                 const { data, error } = await supabase
                     .from('recipes')
                     .update({ title, ingredients: ingredientsArray, instructions })
@@ -155,7 +153,6 @@ const Home: React.FC = () => {
                     );
                 }
             } else {
-                // Create new recipe
                 const { data, error } = await supabase
                     .from('recipes')
                     .insert([{
