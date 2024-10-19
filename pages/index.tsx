@@ -78,7 +78,6 @@ const Home: React.FC = () => {
                 throw new Error(`Error ${response.status}: ${errorText}`);
             }
         
-            // Handle success...
         } catch (error) {
             console.error('Error handling like:', error);
             newImageStates[index].error = `Failed to like image: ${error.message}`;
