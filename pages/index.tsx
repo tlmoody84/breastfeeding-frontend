@@ -33,7 +33,7 @@ const Home: React.FC = () => {
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
     const [recipeIdToUpdate, setRecipeIdToUpdate] = useState<string | null>(null);
-    const [recipes, setRecipes] = useState<Recipe[]>([]); 
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -48,8 +48,7 @@ const Home: React.FC = () => {
             if (error) {
                 console.error('Failed to fetch recipes:', error.message);
             } else {
-                console.log('Fetched recipes:', data);
-                setRecipes(data); // Make sure 'data' includes 'id'
+                setRecipes(data);
             }
         };
         fetchUser();
@@ -60,10 +59,10 @@ const Home: React.FC = () => {
         const newImageStates = [...imageStates];
         newImageStates[index].loading = true;
         setImageStates(newImageStates);
-        
+
         const imageId = images[index].split('/').pop()?.split('.')[0];
         const anonId = userId ? null : `anon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        
+
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
                 method: 'POST',
@@ -73,29 +72,28 @@ const Home: React.FC = () => {
                 },
                 body: JSON.stringify({ user_id: userId }),
             });
-
+        
             if (!response.ok) {
-                throw new Error('Error liking image');
+                const errorText = await response.text();
+                throw new Error(`Error ${response.status}: ${errorText}`);
             }
-
-            const data = await response.json();
-            console.log('Like successful:', data);
-            newImageStates[index].likes += 1; 
-            newImageStates[index].liked = true;
-            newImageStates[index].error = '';
-
-            setTimeout(() => {
-                newImageStates[index].liked = false; 
-                setImageStates(newImageStates);
-            }, 2000); 
-
+        
+            // Handle success...
         } catch (error) {
             console.error('Error handling like:', error);
-            newImageStates[index].error = 'Failed to like image';
+            newImageStates[index].error = `Failed to like image: ${error.message}`;
         } finally {
             newImageStates[index].loading = false;
             setImageStates(newImageStates);
         }
+        
+    };
+
+    const resetRecipeForm = () => {
+        setTitle('');
+        setIngredients('');
+        setInstructions('');
+        setRecipeIdToUpdate(null);
     };
 
     const handleEditRecipe = (recipe: Recipe) => {
@@ -106,68 +104,39 @@ const Home: React.FC = () => {
     };
 
     const handleDeleteRecipe = async (recipe: Recipe) => {
-        const recipeId = recipe.id as string; // Assert that id is a string
-        if (!recipeId) {
-            console.error('No ID provided for deletion:', recipe);
-            return;
-        }
-    
-        console.log('Attempting to delete recipe with id:', recipe.id);
-        
         try {
-            const { data, error } = await supabase
-                .from('recipes')
-                .delete()
-                .eq('id', recipe.id); 
-    
-            if (error) {
-                throw error;
-            }
-    
-            setRecipes((prevRecipes) => prevRecipes.filter(r => r.id !== recipe.id));
+            const { error } = await supabase.from('recipes').delete().eq('id', recipe.id);
+            if (error) throw error;
+            setRecipes(prevRecipes => prevRecipes.filter(r => r.id !== recipe.id));
         } catch (error) {
             console.error('Error deleting recipe:', error.message);
             alert('Failed to delete the recipe. Please try again.');
         }
     };
-    
 
     const handleRecipeSubmit = async (e: FormEvent) => {
         e.preventDefault();
         const ingredientsArray = ingredients.split(',').map(item => item.trim()).filter(Boolean);
-    
+
         try {
             if (recipeIdToUpdate) {
-                // Update recipe
                 const { data, error } = await supabase
                     .from('recipes')
                     .update({ title, ingredients: ingredientsArray, instructions })
                     .eq('id', recipeIdToUpdate)
                     .select();
-    
+
                 if (error) throw error;
-    
                 if (data && data.length > 0) {
-                    setRecipes(prevRecipes =>
-                        prevRecipes.map(recipe =>
-                            recipe.id === recipeIdToUpdate ? data[0] : recipe
-                        )
-                    );
+                    setRecipes(prevRecipes => prevRecipes.map(recipe => recipe.id === recipeIdToUpdate ? data[0] : recipe));
                 }
             } else {
-                // Create new recipe
                 const { data, error } = await supabase
                     .from('recipes')
-                    .insert([{
-                        title,
-                        ingredients: ingredientsArray,
-                        instructions,
-                        author_id: userId // Use userId here
-                    }])
+                    .insert([{ title, ingredients: ingredientsArray, instructions, author_id: userId }])
                     .select();
-    
+
                 if (error) throw error;
-    
                 if (data && data.length > 0) {
                     setRecipes(prevRecipes => [...prevRecipes, ...data]);
                 }
@@ -179,12 +148,12 @@ const Home: React.FC = () => {
             resetRecipeForm();
         }
     };
-    
+
     return (
         <div>
             <h1>Welcome to the Breastfeeding App</h1>
             <h2>Like Your Favorite Nursing Mom</h2>
-            
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
                 {images.map((src, index) => (
                     <div key={index} style={{ textAlign: 'center' }}>
@@ -231,31 +200,10 @@ const Home: React.FC = () => {
                     style={{ padding: '10px', width: '80%', height: '100px', margin: '10px 0', border: '1px solid #ccc', borderRadius: '5px' }}
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
-                    <button
-                        type="submit"
-                        style={{
-                            padding: '10px 15px',
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
+                    <button type="submit" style={{ padding: '10px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
                         {recipeIdToUpdate ? 'Update Recipe' : 'Add Recipe'}
                     </button>
-                    <button
-                        type="button"
-                        onClick={resetRecipeForm}
-                        style={{
-                            padding: '10px 15px',
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
+                    <button type="button" onClick={resetRecipeForm} style={{ padding: '10px 15px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
                         Cancel
                     </button>
                 </div>
@@ -263,24 +211,18 @@ const Home: React.FC = () => {
 
             <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Recipes</h2>
             <ul>
-    {recipes.map((recipe) => (
-        <li key={recipe.id}>  {/* Ensure recipe.id is defined */}
-            <h3>{recipe.title}</h3>
-            <p>Ingredients: {recipe.ingredients.join(', ')}</p>
-            <p>Instructions: {recipe.instructions}</p>
-            <button onClick={() => handleEditRecipe(recipe)}>Edit</button>
-            <button onClick={() => handleDeleteRecipe(recipe)}>Delete</button>
-        </li>
-    ))}
-</ul>
-
-    
+                {recipes.map((recipe) => (
+                    <li key={recipe.id}>
+                        <h3>{recipe.title}</h3>
+                        <p>Ingredients: {recipe.ingredients.join(', ')}</p>
+                        <p>Instructions: {recipe.instructions}</p>
+                        <button onClick={() => handleEditRecipe(recipe)}>Edit</button>
+                        <button onClick={() => handleDeleteRecipe(recipe)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
 
 export default Home;
-
-function resetRecipeForm() {
-    throw new Error('Function not implemented.');
-}
