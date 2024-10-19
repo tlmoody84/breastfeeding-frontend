@@ -5,7 +5,6 @@ interface Recipe {
     title: string;
     ingredients: string[];
     instructions: string;
-    author_id?: number; 
 }
 
 const RecipePage: React.FC = () => {
@@ -57,14 +56,20 @@ const RecipePage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const recipeData = {
+                title: newRecipe.title,
+                ingredients: newRecipe.ingredients,
+                instructions: newRecipe.instructions,
+            };
+
             const response = await fetch('https://rgoylwbneyshqowidhud.supabase.co/rest/v1/recipes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer YOUR_SUPABASE_ANON_KEY`, // Replace with your key
-                    'apikey': 'YOUR_SUPABASE_ANON_KEY', // Replace with your key
+                    'Authorization': `Bearer YOUR_SUPABASE_ANON_KEY`,
+                    'apikey': 'YOUR_SUPABASE_ANON_KEY',
                 },
-                body: JSON.stringify(newRecipe),
+                body: JSON.stringify(recipeData),
             });
 
             if (!response.ok) {
@@ -73,12 +78,17 @@ const RecipePage: React.FC = () => {
             }
 
             const data = await response.json();
-            setRecipes((prevRecipes) => [...prevRecipes, data]); 
-            setNewRecipe({ title: '', ingredients: [], instructions: '' }); 
+            setRecipes((prevRecipes) => [...prevRecipes, data]);
+            resetRecipeForm();
         } catch (error: unknown) {
             console.error('Error creating recipe:', error);
             setError((error as Error).message);
         }
+    };
+
+    const resetRecipeForm = () => {
+        setNewRecipe({ title: '', ingredients: [], instructions: '' });
+        setError(null); 
     };
 
     return (

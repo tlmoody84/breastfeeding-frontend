@@ -56,20 +56,19 @@ const Home: React.FC = () => {
         fetchRecipes();
     }, []);
 
-    const handleLike = async (index: number) => {
+    const handleLike = async (index) => {
         const newImageStates = [...imageStates];
         newImageStates[index].loading = true;
         setImageStates(newImageStates);
     
-        const imageId = images[index].split('/').pop()?.split('.')[0];
-        const anonId = userId ? null : `anon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const imageId = images[index].split('/').pop()?.split('.')[0]; 
+        const userId = null;
     
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-anon-id': anonId || undefined,
                 },
                 body: JSON.stringify({ user_id: userId }),
             });
@@ -81,19 +80,19 @@ const Home: React.FC = () => {
             const data = await response.json();
             console.log('Like successful:', data);
     
-            // Increment the likes count in state
-            newImageStates[index].likes += 1; // Increment likes
-            newImageStates[index].liked = true; // Mark as liked
-            newImageStates[index].error = ''; // Clear any previous errors
+            newImageStates[index].likes += 1; 
+            newImageStates[index].liked = true; 
+            newImageStates[index].error = ''; 
     
         } catch (error) {
             console.error('Error handling like:', error);
-            newImageStates[index].error = 'Failed to like image'; // Set error message
+            newImageStates[index].error = 'Failed to like image'; 
         } finally {
-            newImageStates[index].loading = false; // Stop loading
-            setImageStates(newImageStates); // Update state
+            newImageStates[index].loading = false; 
+            setImageStates(newImageStates);
         }
     };
+    
     
     
     

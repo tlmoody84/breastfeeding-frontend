@@ -3,8 +3,7 @@ import express from 'express';
 import next from 'next';
 import cors from 'cors';
 import path from 'path';
-import request from 'request';
-import bodyParser from 'body-parser';
+import bodyParser from require('body-parser');
 import likesRoutes from './api/routes/likesRoutes'; 
 import feedsRoutes from './api/routes/feedsRoutes'; 
 import usersRoutes from './api/routes/usersRoutes';
@@ -16,14 +15,16 @@ const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
 const server = express();
+
 server.use((req, res, next) => {
-  console.log('Request Origin:', req.headers.origin);
+  console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
+
 server.use(cors({
   origin: [
-    'http://localhost:4001', // local development
-    'https://breastfeeding-frontend.vercel.app' // your Vercel app
+    'http://localhost:4001', 
+    'https://breastfeeding-frontend.vercel.app' 
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
@@ -88,11 +89,6 @@ server.get('/api/likes', async (req, res) => {
   const { data, error } = await supabase.from('image_votes').select('*');
   if (error) return res.status(500).json({ error: 'Error fetching likes' });
   res.json(data);
-});
-
-server.get('/proxy', (req, res) => {
-  const url = req.query.url; 
-  request({ url, method: 'GET' }).pipe(res);
 });
 
 server.get('/api/recipes', async (req, res) => {

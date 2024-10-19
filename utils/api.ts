@@ -60,7 +60,6 @@ const fetchLikes = async (imageId) => {
 
         const likesData = await response.json();
 
-        // Display the likes along with user_ids
         likesData.forEach(like => {
             console.log(`User ID: ${like.user_id} liked image ${like.image_id}`);
         });
