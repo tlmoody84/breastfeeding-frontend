@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app';
 import '../styles/notes.css';
 import '../styles/users.css';
 import '../styles/feeds.css';
+import React from 'react';
 
 
 

@@ -1,5 +1,4 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient';
 
 interface Recipe {
@@ -9,8 +8,70 @@ interface Recipe {
     instructions: string;
 }
 
+const RecipeForm: React.FC<{
+    title: string;
+    ingredients: string;
+    instructions: string;
+    recipeIdToUpdate: string | null;
+    setTitle: (title: string) => void;
+    setIngredients: (ingredients: string) => void;
+    setInstructions: (instructions: string) => void;
+    onSubmit: (e: FormEvent) => void;
+    onCancel: () => void;
+}> = ({ title, ingredients, instructions, recipeIdToUpdate, setTitle, setIngredients, setInstructions, onSubmit, onCancel }) => (
+    <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <input
+            type="text"
+            placeholder="Recipe Title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
+            style={{ padding: '10px', width: '80%', margin: '10px 0' }}
+        />
+        <textarea
+            placeholder="Ingredients (comma separated)"
+            value={ingredients}
+            onChange={e => setIngredients(e.target.value)}
+            required
+            style={{ padding: '10px', width: '80%', height: '100px', margin: '10px 0' }}
+        />
+        <textarea
+            placeholder="Instructions"
+            value={instructions}
+            onChange={e => setInstructions(e.target.value)}
+            required
+            style={{ padding: '10px', width: '80%', height: '100px', margin: '10px 0' }}
+        />
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
+            <button type="submit" style={{ padding: '10px 15px', backgroundColor: '#28a745', color: 'white' }}>
+                {recipeIdToUpdate ? 'Update Recipe' : 'Add Recipe'}
+            </button>
+            <button type="button" onClick={onCancel} style={{ padding: '10px 15px', backgroundColor: '#dc3545', color: 'white' }}>
+                Cancel
+            </button>
+        </div>
+    </form>
+);
+
+const RecipeList: React.FC<{
+    recipes: Recipe[];
+    onEdit: (recipe: Recipe) => void;
+    onDelete: (recipe: Recipe) => void;
+}> = ({ recipes, onEdit, onDelete }) => (
+    <ul>
+        {recipes.map((recipe) => (
+            <li key={recipe.id}>
+                <h3>{recipe.title}</h3>
+                <p>Ingredients: {recipe.ingredients.join(', ')}</p>
+                <p>Instructions: {recipe.instructions}</p>
+                <button onClick={() => onEdit(recipe)}>Edit</button>
+                <button onClick={() => onDelete(recipe)}>Delete</button>
+            </li>
+        ))}
+    </ul>
+);
+
 const Home: React.FC = () => {
-    const router = useRouter();
     const images = [
         '/images/breastfeeding1.jpg',
         '/images/breastfeeding2.jpg',
@@ -24,50 +85,44 @@ const Home: React.FC = () => {
         '/images/breastfeeding10.jpg',
     ];
 
-    const [userId, setUserId] = useState<string | null>(null);
-    const [imageStates, setImageStates] = useState(
-        images.map(() => ({ likes: 0, liked: false, loading: false, error: '' }))
-    );
-
+    const [imageStates, setImageStates] = useState(images.map(() => ({ likes: 0, likedBy: new Set<string>(), loading: false, error: '' })));
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
     const [recipeIdToUpdate, setRecipeIdToUpdate] = useState<string | null>(null);
-    const [recipes, setRecipes] = useState<Recipe[]>([]); 
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const { data } = await supabase.auth.getUser();
-            if (data && data.user) {
-                setUserId(data.user.id);
-            }
-        };
-
         const fetchRecipes = async () => {
             const { data, error } = await supabase.from('recipes').select('*');
-            if (error) {
-                console.error('Failed to fetch recipes:', error.message);
-            } else {
-                console.log('Fetched recipes:', data);
-                setRecipes(data); 
-            }
+            if (error) console.error('Failed to fetch recipes:', error.message);
+            else setRecipes(data);
         };
-        fetchUser();
+
         fetchRecipes();
     }, []);
 
-    const handleLike = async (index) => {
+    const handleLike = async (index: number) => {
         const newImageStates = [...imageStates];
-        
-        // Immediate update for better user experience
-        newImageStates[index].loading = true; // Show loading state
-        newImageStates[index].likes += 1; // Increment likes immediately
-        newImageStates[index].liked = true; // Mark as liked
-        newImageStates[index].error = ''; // Clear any previous error
-        setImageStates(newImageStates); // Update state
+        const tempUserId = Math.random().toString(36).substr(2, 9); // Generate a temporary user ID
 
-        const imageId = images[index].split('/').pop()?.split('.')[0]; 
-        const userId = null; // Adjust as necessary
+        // Check if the user has already liked the image
+        if (newImageStates[index].likedBy.has(tempUserId)) {
+            alert('You have already liked this image!');
+            return;
+        }
+
+        // Increment likes immediately in the UI
+        newImageStates[index].likes += 1; 
+        newImageStates[index].likedBy.add(tempUserId); // Add temporary user ID to likedBy set
+        setImageStates(newImageStates); // Update state immediately
+
+        // Now handle the network request
+        newImageStates[index].loading = true;
+        newImageStates[index].error = '';
+        setImageStates(newImageStates);
+
+        const imageId = images[index].split('/').pop()?.split('.')[0];
 
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
@@ -75,7 +130,7 @@ const Home: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: userId }),
+                body: JSON.stringify({ user_id: tempUserId }),
             });
 
             if (!response.ok) {
@@ -84,48 +139,14 @@ const Home: React.FC = () => {
 
             const data = await response.json();
             console.log('Like successful:', data);
-
         } catch (error) {
             console.error('Error handling like:', error);
-            // Reset the likes count if the like operation fails
-            newImageStates[index].likes -= 1; 
-            newImageStates[index].error = 'Failed to like image'; 
+            newImageStates[index].error = 'Failed to like image';
+            newImageStates[index].likes -= 1; // Roll back the like count
+            newImageStates[index].likedBy.delete(tempUserId); // Remove the temporary user ID from likedBy set
         } finally {
-            newImageStates[index].loading = false; // Stop loading state
-            setImageStates(newImageStates); // Update state again
-        }
-    };
-
-    const handleEditRecipe = (recipe: Recipe) => {
-        setTitle(recipe.title);
-        setIngredients(recipe.ingredients.join(', '));
-        setInstructions(recipe.instructions);
-        setRecipeIdToUpdate(recipe.id);
-    };
-
-    const handleDeleteRecipe = async (recipe: Recipe) => {
-        const recipeId = recipe.id as string; 
-        if (!recipeId) {
-            console.error('No ID provided for deletion:', recipe);
-            return;
-        }
-
-        console.log('Attempting to delete recipe with id:', recipe.id);
-        
-        try {
-            const { data, error } = await supabase
-                .from('recipes')
-                .delete()
-                .eq('id', recipe.id); 
-
-            if (error) {
-                throw error;
-            }
-
-            setRecipes((prevRecipes) => prevRecipes.filter(r => r.id !== recipe.id));
-        } catch (error) {
-            console.error('Error deleting recipe:', error.message);
-            alert('Failed to delete the recipe. Please try again.');
+            newImageStates[index].loading = false;
+            setImageStates(newImageStates);
         }
     };
 
@@ -139,7 +160,7 @@ const Home: React.FC = () => {
     const handleRecipeSubmit = async (e: FormEvent) => {
         e.preventDefault();
         const ingredientsArray = ingredients.split(',').map(item => item.trim()).filter(Boolean);
-    
+
         try {
             if (recipeIdToUpdate) {
                 const { data, error } = await supabase
@@ -147,10 +168,10 @@ const Home: React.FC = () => {
                     .update({ title, ingredients: ingredientsArray, instructions })
                     .eq('id', recipeIdToUpdate)
                     .select();
-    
+
                 if (error) throw error;
-    
-                if (data && data.length > 0) {
+
+                if (data) {
                     setRecipes(prevRecipes =>
                         prevRecipes.map(recipe =>
                             recipe.id === recipeIdToUpdate ? data[0] : recipe
@@ -160,17 +181,12 @@ const Home: React.FC = () => {
             } else {
                 const { data, error } = await supabase
                     .from('recipes')
-                    .insert([{
-                        title,
-                        ingredients: ingredientsArray,
-                        instructions,
-                        author_id: userId 
-                    }])
+                    .insert([{ title, ingredients: ingredientsArray, instructions }])
                     .select();
-    
+
                 if (error) throw error;
-    
-                if (data && data.length > 0) {
+
+                if (data) {
                     setRecipes(prevRecipes => [...prevRecipes, ...data]);
                 }
             }
@@ -181,19 +197,42 @@ const Home: React.FC = () => {
             resetRecipeForm();
         }
     };
-    
+
+    const handleEditRecipe = (recipe: Recipe) => {
+        setTitle(recipe.title);
+        setIngredients(recipe.ingredients.join(', '));
+        setInstructions(recipe.instructions);
+        setRecipeIdToUpdate(recipe.id);
+    };
+
+    const handleDeleteRecipe = async (recipe: Recipe) => {
+        try {
+            const { error } = await supabase
+                .from('recipes')
+                .delete()
+                .eq('id', recipe.id);
+
+            if (error) throw error;
+
+            setRecipes(prevRecipes => prevRecipes.filter(r => r.id !== recipe.id));
+        } catch (error) {
+            console.error('Error deleting recipe:', error.message);
+            alert('Failed to delete recipe. Please try again.');
+        }
+    };
+
     return (
         <div>
             <h1>Welcome to the Breastfeeding App</h1>
             <h2>Like Your Favorite Nursing Mom</h2>
-            
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
                 {images.map((src, index) => (
                     <div key={index} style={{ textAlign: 'center' }}>
                         <img src={src} alt={`Nursing Position ${index + 1}`} style={{ width: '200px', borderRadius: '10px' }} />
                         <div>
                             <button onClick={() => handleLike(index)} disabled={imageStates[index].loading}>
-                                {imageStates[index].loading ? 'Liking...' : (imageStates[index].liked ? 'Liked' : 'Like')}
+                                {imageStates[index].loading ? 'Liking...' : 'Like'}
                             </button>
                         </div>
                         <p>Likes: {imageStates[index].likes}</p>
@@ -203,78 +242,20 @@ const Home: React.FC = () => {
             </div>
 
             <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Recipe Management</h2>
-            <form onSubmit={handleRecipeSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <input
-                    type="text"
-                    id="recipe-title"
-                    name="title"
-                    placeholder="Recipe Title"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    required
-                    style={{ padding: '10px', width: '80%', margin: '10px 0', border: '1px solid #ccc', borderRadius: '5px' }}
-                />
-                <textarea
-                    id="recipe-ingredients"
-                    name="ingredients"
-                    placeholder="Ingredients (comma separated)"
-                    value={ingredients}
-                    onChange={e => setIngredients(e.target.value)}
-                    required
-                    style={{ padding: '10px', width: '80%', height: '100px', margin: '10px 0', border: '1px solid #ccc', borderRadius: '5px' }}
-                />
-                <textarea
-                    id="recipe-instructions"
-                    name="instructions"
-                    placeholder="Instructions"
-                    value={instructions}
-                    onChange={e => setInstructions(e.target.value)}
-                    required
-                    style={{ padding: '10px', width: '80%', height: '100px', margin: '10px 0', border: '1px solid #ccc', borderRadius: '5px' }}
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
-                    <button
-                        type="submit"
-                        style={{
-                            padding: '10px 15px',
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        {recipeIdToUpdate ? 'Update Recipe' : 'Add Recipe'}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={resetRecipeForm}
-                        style={{
-                            padding: '10px 15px',
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Cancel
-                    </button>
-                </div>
-            </form>
+            <RecipeForm
+                title={title}
+                ingredients={ingredients}
+                instructions={instructions}
+                recipeIdToUpdate={recipeIdToUpdate}
+                setTitle={setTitle}
+                setIngredients={setIngredients}
+                setInstructions={setInstructions}
+                onSubmit={handleRecipeSubmit}
+                onCancel={resetRecipeForm}
+            />
 
             <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Recipes</h2>
-            <ul>
-                {recipes.map((recipe) => (
-                    <li key={recipe.id}>  
-                        <h3>{recipe.title}</h3>
-                        <p>Ingredients: {recipe.ingredients.join(', ')}</p>
-                        <p>Instructions: {recipe.instructions}</p>
-                        <button onClick={() => handleEditRecipe(recipe)}>Edit</button>
-                        <button onClick={() => handleDeleteRecipe(recipe)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+            <RecipeList recipes={recipes} onEdit={handleEditRecipe} onDelete={handleDeleteRecipe} />
         </div>
     );
 };

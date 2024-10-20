@@ -11,11 +11,9 @@ const RecipePage: React.FC = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [newRecipe, setNewRecipe] = useState<Recipe>({
-        title: '',
-        ingredients: [],
-        instructions: '',
-    });
+    const [newRecipe, setNewRecipe] = useState<Recipe>({ title: '', ingredients: [], instructions: '' });
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editingRecipeId, setEditingRecipeId] = useState<number | null>(null);
 
     useEffect(() => {
         fetchRecipes();
@@ -60,37 +58,50 @@ const RecipePage: React.FC = () => {
                 title: newRecipe.title,
                 ingredients: newRecipe.ingredients,
                 instructions: newRecipe.instructions,
+                // Remove author_id if not needed
             };
-
-            const response = await fetch('https://rgoylwbneyshqowidhud.supabase.co/rest/v1/recipes', {
-                method: 'POST',
+    
+            const method = isEditing ? 'PUT' : 'POST';
+            const url = isEditing 
+                ? `http://localhost:4001/api/recipes/${editingRecipeId}` 
+                : 'http://localhost:4001/api/recipes';
+    
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer YOUR_SUPABASE_ANON_KEY`,
-                    'apikey': 'YOUR_SUPABASE_ANON_KEY',
                 },
                 body: JSON.stringify(recipeData),
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`Failed to create recipe: ${errorData.message}`);
-            }
-
-            const data = await response.json();
-            setRecipes((prevRecipes) => [...prevRecipes, data]);
-            resetRecipeForm();
-        } catch (error: unknown) {
-            console.error('Error creating recipe:', error);
+    
+            // Handle the response...
+        } catch (error) {
+            console.error('Error creating/updating recipe:', error);
             setError((error as Error).message);
         }
     };
+    
 
     const resetRecipeForm = () => {
         setNewRecipe({ title: '', ingredients: [], instructions: '' });
-        setError(null); 
+        setIsEditing(false);
+        setEditingRecipeId(null);
     };
-
+    
+    const handleEditClick = (recipe: Recipe) => {
+        if (recipe) {
+            setNewRecipe({
+                title: recipe.title,
+                ingredients: recipe.ingredients,
+                instructions: recipe.instructions,
+            });
+            setIsEditing(true);
+            setEditingRecipeId(recipe.id!);
+        } else {
+            console.error('Recipe not found for editing.');
+        }
+    };
+    
     return (
         <div>
             <h1>All Recipes</h1>
@@ -100,12 +111,14 @@ const RecipePage: React.FC = () => {
                 {recipes.map(recipe => (
                     <li key={recipe.id}>
                         <strong>{recipe.title}</strong> - {recipe.ingredients.join(', ')}
+                        <button onClick={() => handleEditClick(recipe)}>Edit</button>
                     </li>
                 ))}
             </ul>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
+                    id="recipe-title"
                     name="title"
                     placeholder="Recipe Title"
                     value={newRecipe.title}
@@ -113,6 +126,7 @@ const RecipePage: React.FC = () => {
                     required
                 />
                 <textarea
+                    id="recipe-instructions"
                     name="instructions"
                     placeholder="Instructions"
                     value={newRecipe.instructions}
@@ -121,15 +135,15 @@ const RecipePage: React.FC = () => {
                 />
                 <input
                     type="text"
+                    id="recipe-ingredients"
                     name="ingredients"
                     placeholder="Ingredients (comma-separated)"
                     value={newRecipe.ingredients.join(', ')}
                     onChange={handleIngredientsChange}
                     required
                 />
-                <button type="submit">Add Recipe</button>
+                <button type="submit">{isEditing ? 'Update Recipe' : 'Add Recipe'}</button>
             </form>
-            <button onClick={() => window.history.back()}>Back to Home</button>
         </div>
     );
 };

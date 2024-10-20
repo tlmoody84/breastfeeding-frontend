@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchFeeds } from '../utils/api'; 
 import { Feed } from '../utils/types'; 
+import React from 'react';
 
 const FeedsPage = () => {
     const [feeds, setFeeds] = useState<Feed[]>([]);

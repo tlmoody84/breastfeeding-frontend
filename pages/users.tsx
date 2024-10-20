@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { fetchUsers } from '../utils/api';
 import { ApiUser } from '../utils/types';
+import React from 'react';
+
 
 const UsersPage: React.FC = () => {
     const [users, setUsers] = useState<ApiUser[]>([]);
