@@ -59,15 +59,14 @@ const Home: React.FC = () => {
     const handleLike = async (index) => {
         const newImageStates = [...imageStates];
         
-        // Immediate update for better user experience
-        newImageStates[index].loading = true; // Show loading state
-        newImageStates[index].likes += 1; // Increment likes immediately
-        newImageStates[index].liked = true; // Mark as liked
-        newImageStates[index].error = ''; // Clear any previous error
-        setImageStates(newImageStates); // Update state
+        newImageStates[index].loading = true; 
+        newImageStates[index].likes += 1; 
+        newImageStates[index].liked = true; 
+        newImageStates[index].error = '';
+        setImageStates(newImageStates); 
 
         const imageId = images[index].split('/').pop()?.split('.')[0]; 
-        const userId = null; // Adjust as necessary
+        const userId = null;
 
         try {
             const response = await fetch(`http://localhost:4000/api/likes/${imageId}/like`, {
@@ -87,12 +86,11 @@ const Home: React.FC = () => {
 
         } catch (error) {
             console.error('Error handling like:', error);
-            // Reset the likes count if the like operation fails
             newImageStates[index].likes -= 1; 
             newImageStates[index].error = 'Failed to like image'; 
         } finally {
-            newImageStates[index].loading = false; // Stop loading state
-            setImageStates(newImageStates); // Update state again
+            newImageStates[index].loading = false; 
+            setImageStates(newImageStates); 
         }
     };
 
