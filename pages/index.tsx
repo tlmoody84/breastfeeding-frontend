@@ -104,23 +104,18 @@ const Home: React.FC = () => {
 
     const handleLike = async (index: number) => {
         const newImageStates = [...imageStates];
-        const tempUserId = Math.random().toString(36).substr(2, 9); // Generate a temporary user ID
+        const tempUserId = Math.random().toString(36).substr(2, 9); 
 
-        // Check if the user has already liked the image
         if (newImageStates[index].likedBy.has(tempUserId)) {
             alert('You have already liked this image!');
             return;
         }
 
-        // Increment likes immediately in the UI
+        newImageStates[index].loading = true; 
         newImageStates[index].likes += 1; 
-        newImageStates[index].likedBy.add(tempUserId); // Add temporary user ID to likedBy set
-        setImageStates(newImageStates); // Update state immediately
-
-        // Now handle the network request
-        newImageStates[index].loading = true;
-        newImageStates[index].error = '';
-        setImageStates(newImageStates);
+        newImageStates[index].likedBy.add(tempUserId); 
+        newImageStates[index].error = ''; 
+        setImageStates(newImageStates); 
 
         const imageId = images[index].split('/').pop()?.split('.')[0];
 
@@ -141,12 +136,13 @@ const Home: React.FC = () => {
             console.log('Like successful:', data);
         } catch (error) {
             console.error('Error handling like:', error);
-            newImageStates[index].error = 'Failed to like image';
-            newImageStates[index].likes -= 1; // Roll back the like count
-            newImageStates[index].likedBy.delete(tempUserId); // Remove the temporary user ID from likedBy set
+            // Reset the likes count if the like operation fails
+            newImageStates[index].likes -= 1;
+            newImageStates[index].likedBy.delete(tempUserId); 
+            newImageStates[index].error = 'Failed to like image'; 
         } finally {
-            newImageStates[index].loading = false;
-            setImageStates(newImageStates);
+            newImageStates[index].loading = false; 
+            setImageStates(newImageStates); 
         }
     };
 
