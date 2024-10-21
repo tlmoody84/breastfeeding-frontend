@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "cross-env PORT=4001 next start",
     "lint": "next lint",
+    "type": "module",
     "test": "jest"
   },
   "keywords": [],
@@ -43,9 +44,11 @@
     "eslint-config-next": "14.2.13",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "nodemon": "^3.1.7",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
   "jest": {

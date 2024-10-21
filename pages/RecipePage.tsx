@@ -58,14 +58,13 @@ const RecipePage: React.FC = () => {
                 title: newRecipe.title,
                 ingredients: newRecipe.ingredients,
                 instructions: newRecipe.instructions,
-                // Remove author_id if not needed
             };
-    
+
             const method = isEditing ? 'PUT' : 'POST';
             const url = isEditing 
                 ? `http://localhost:4001/api/recipes/${editingRecipeId}` 
                 : 'http://localhost:4001/api/recipes';
-    
+
             const response = await fetch(url, {
                 method: method,
                 headers: {
@@ -73,21 +72,20 @@ const RecipePage: React.FC = () => {
                 },
                 body: JSON.stringify(recipeData),
             });
-    
-            // Handle the response...
+            resetRecipeForm();
+
         } catch (error) {
             console.error('Error creating/updating recipe:', error);
             setError((error as Error).message);
         }
     };
-    
 
     const resetRecipeForm = () => {
         setNewRecipe({ title: '', ingredients: [], instructions: '' });
         setIsEditing(false);
         setEditingRecipeId(null);
     };
-    
+
     const handleEditClick = (recipe: Recipe) => {
         if (recipe) {
             setNewRecipe({
@@ -101,7 +99,7 @@ const RecipePage: React.FC = () => {
             console.error('Recipe not found for editing.');
         }
     };
-    
+
     return (
         <div>
             <h1>All Recipes</h1>
@@ -116,34 +114,35 @@ const RecipePage: React.FC = () => {
                 ))}
             </ul>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    id="recipe-title"
-                    name="title"
-                    placeholder="Recipe Title"
-                    value={newRecipe.title}
-                    onChange={handleRecipeChange}
-                    required
-                />
-                <textarea
-                    id="recipe-instructions"
-                    name="instructions"
-                    placeholder="Instructions"
-                    value={newRecipe.instructions}
-                    onChange={handleRecipeChange}
-                    required
-                />
-                <input
-                    type="text"
-                    id="recipe-ingredients"
-                    name="ingredients"
-                    placeholder="Ingredients (comma-separated)"
-                    value={newRecipe.ingredients.join(', ')}
-                    onChange={handleIngredientsChange}
-                    required
-                />
-                <button type="submit">{isEditing ? 'Update Recipe' : 'Add Recipe'}</button>
-            </form>
+    <input
+        type="text"
+        id="recipe-title"
+        name="title" 
+        placeholder="Recipe Title"
+        value={newRecipe.title}
+        onChange={handleRecipeChange}
+        required
+    />
+    <textarea
+        id="recipe-instructions" 
+        name="instructions" 
+        placeholder="Instructions"
+        value={newRecipe.instructions}
+        onChange={handleRecipeChange}
+        required
+    />
+    <input
+        type="text"
+        id="recipe-ingredients" 
+        name="ingredients"
+        placeholder="Ingredients (comma-separated)"
+        value={newRecipe.ingredients.join(', ')}
+        onChange={handleIngredientsChange}
+        required
+    />
+    <button type="submit">{isEditing ? 'Update Recipe' : 'Add Recipe'}</button>
+</form>
+
         </div>
     );
 };
