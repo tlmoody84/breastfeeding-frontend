@@ -42,7 +42,7 @@ server.use('/api/feeds', feedsRoutes);
 server.use('/api/users', usersRoutes); 
 server.use('/api/recipes', recipesRoutes); 
 server.use('/api/notes', notesRoutes);
-server.use('/api/posts', postsRouter); 
+server.use('/api/posts', postsRoutes); 
 
 server.get('/api/feeds', async (req, res) => {
   try {
