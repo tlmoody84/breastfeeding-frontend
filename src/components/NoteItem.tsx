@@ -1,5 +1,5 @@
 import React from 'react';
-import { Note } from '../utils/types';
+import { Note } from '../../utils/types';
 
 interface NoteItemProps {
     note: Note;

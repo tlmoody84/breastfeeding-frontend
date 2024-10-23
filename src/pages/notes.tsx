@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { fetchNotes } from '../utils/api';
-import { Note } from '../utils/types';
+import { fetchNotes } from '../../utils/api';
+import { Note } from '../../utils/types';
 import React from 'react';
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Feed } from '../utils/types';
+import { Feed } from '../../utils/types';
 
 interface FeedItemProps {
     feed: Feed;

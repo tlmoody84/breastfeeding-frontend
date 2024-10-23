@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { fetchUsers } from '../utils/api';
-import { ApiUser } from '../utils/types';
+import { fetchUsers } from '../../utils/api';
+import { ApiUser } from '../../utils/types';
 import React from 'react';
 
 

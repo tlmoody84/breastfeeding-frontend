@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchNotes } from '../utils/api';
+import { fetchNotes } from '../../utils/api';
 import NoteItem from './NoteItem';
-import { Note } from '../utils/types';
+import { Note } from '../../utils/types';
 
 const NoteList: React.FC = () => {
     const [notes, setNotes] = useState<Note[]>([]);

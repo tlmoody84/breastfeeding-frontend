@@ -11,14 +11,22 @@ export const fetchUsers = async (): Promise<ApiUser[]> => {
 };
 
 export const fetchFeeds = async (): Promise<Feed[]> => {
-    const response = await api.get('/feeds');
-    return response.data;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feeds`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch feeds');
+    }
+    return response.json();
 };
 
-export const fetchNotes = async (): Promise<Note[]> => {
-    const response = await api.get('/notes');
-    return response.data;
-};
+export const fetchNotes = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/notes');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      throw error;
+    }
+  };
 
 export const submitFeed = async (feedData: Omit<Feed, 'id'>): Promise<Feed> => {
     try {

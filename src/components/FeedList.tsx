@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchFeeds } from '../utils/api';
+import { fetchFeeds } from '../../utils/api';
 import FeedItem from './FeedItem';
-import { Feed } from '../utils/types';
+import { Feed } from '../../utils/types';
 
 const FeedList: React.FC = () => {
     const [feeds, setFeeds] = useState<Feed[]>([]);

@@ -3,7 +3,7 @@ import express from 'express';
 import next from 'next';
 import cors from 'cors';
 import path from 'path';
-import bodyParser from require('body-parser');
+import bodyParser from 'body-parser';
 import likesRoutes from './api/routes/likesRoutes'; 
 import feedsRoutes from './api/routes/feedsRoutes'; 
 import usersRoutes from './api/routes/usersRoutes';
@@ -12,9 +12,8 @@ import notesRoutes from './src/api/routes/notesRoutes';
 import postsRoutes from './src/api/routes/postsRoutes';
 import { supabase } from './supabaseClient';
 
-const dev = process.env.NODE_ENV !== 'production';
-const nextApp = next({ dev });
-const handle = nextApp.getRequestHandler();
+
+// const bodyParser = require('body-parser');
 
 const server = express();
 
@@ -43,6 +42,12 @@ server.use('/api/users', usersRoutes);
 server.use('/api/recipes', recipesRoutes); 
 server.use('/api/notes', notesRoutes);
 server.use('/api/posts', postsRoutes); 
+
+fetch('http://localhost:4000/api/endpoint')
+
+server.all('*', (req, res) => {
+  return handle(req, res);
+});
 
 server.get('/api/feeds', async (req, res) => {
   try {
@@ -195,7 +200,7 @@ server.delete('/api/posts/:id', async (req, res) => {
   res.status(204).send(); 
 });
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, (err) => {
   if (err) throw err;
   console.log(`> Ready on http://localhost:${PORT}`);

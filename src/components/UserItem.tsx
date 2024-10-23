@@ -1,5 +1,5 @@
 import React from 'react';
-import { ApiUser } from '../utils/types';
+import { ApiUser } from '../../utils/types';
 
 interface UserItemProps {
     user: ApiUser;

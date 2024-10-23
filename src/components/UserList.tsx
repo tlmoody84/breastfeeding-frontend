@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchUsers } from '../utils/api';
+import { fetchUsers } from '../../utils/api';
 import UserItem from './UserItem';
-import { ApiUser } from '../utils/types';
+import { ApiUser } from '../../utils/types';
 
 const UserList: React.FC = () => {
     const [users, setUsers] = useState<ApiUser[]>([]);

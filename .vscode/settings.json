@@ -5,6 +5,7 @@
         "imageid",
         "Millis",
         "pkey",
+        "resave",
         "supabase",
         "TABLESPACE",
         "tailwindcss",

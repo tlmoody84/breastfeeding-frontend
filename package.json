@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 4001",
     "build": "next build",
-    "start": "cross-env PORT=4001 next start",
+    "start": "cross-env PORT=4001 next start, node server.js",
     "lint": "next lint",
     "type": "module",
     "test": "jest"
@@ -21,9 +21,12 @@
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
     "next": "^14.2.15",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
@@ -36,7 +39,7 @@
     "@types/jest": "^29.5.13",
     "@types/node": "^20.16.12",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18",
+    "@types/react-dom": "^18.3.1",
     "@types/testing-library__user-event": "^4.1.1",
     "babel-jest": "^29.7.0",
     "cross-env": "^7.0.3",
